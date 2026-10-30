@@ -1566,6 +1566,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
         ['publishing house','#F7C6D6',() => viewGo('press')],
         ['plan & year calendar','#9EDBD3',() => viewGo('plan')],
         ['Ocean Crossing','#9FD3E6',() => openRide('ship')],
+        ['Pandora\'s box · the photo room 📷','#E6A0C4',() => openMemories()],
         ['the secret room ✦','#FFE08A',() => secretRoom()]
       ];
       const x = el('button',{class:'rw-x',type:'button','aria-label':'Close',text:'✕',onclick:closeRide});
@@ -1582,6 +1583,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
       const card = el('div',{class:'charm-card secret',role:'dialog','aria-modal':'true','aria-label':'The secret room'}, x,
         el('p',{class:'cc-kicker',text:'you found the secret room'}), el('h3',{text:'♡ M & N ♡'}),
         el('p',{class:'cc-story',text:'Eight years of letters, a few oceans, one broken suitcase handle and countless Ferris wheels. This park is where it all lives.'}),
+        el('button',{class:'key key-primary',type:'button',text:'open Pandora\'s box of memories 📷',onclick:() => { closeRide(); openMemories(); }}),
         el('p',{class:'cc-hello',text:'shh, don\'t tell anyone ✦'}));
       const scrim = el('div',{class:'ride-scrim'}, card);
       scrim.addEventListener('click', ev => { if (ev.target === scrim) closeRide(); });

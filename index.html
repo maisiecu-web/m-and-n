@@ -2555,7 +2555,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
     async function persist(okMsg, note){
       if (artifact && state.canWrite){ const ok = await save({ ...snapshot() }, okMsg); note.textContent = ok ? '' : 'Could not save just now. Try again.'; return ok; }
       try { localStorage.setItem(PLACES_LS, JSON.stringify(state.places)); } catch(e){}
-      toast(okMsg); note.textContent = 'Saved on this device. To share it with each other, add it from the Claude version of the park.'; return true;
+      toast(okMsg); note.textContent = 'Password OK ✦ but this public copy can\'t save online. Publish it in the Claude version of the park and it shows up here within the hour (kept on this device for now).'; return true;
     }
     function renderSide(){
       side.replaceChildren();
@@ -3017,7 +3017,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
   async function persistAll(okMsg, note){
     if (artifact && state.canWrite){ const ok = await save({ ...snapshot() }, okMsg); note.textContent = ok ? 'Saved for both of you ✦' : 'Could not save just now. Try again.'; return ok; }
     try { localStorage.setItem(PLANS_LS, JSON.stringify(state.plans || [])); localStorage.setItem(EXTRAS_LS, JSON.stringify(state.extras || {})); localStorage.setItem('mn-doors-draft', JSON.stringify(state.doors || {})); localStorage.setItem('mn-snips-draft', JSON.stringify(state.snips || [])); } catch(e){}
-    toast(okMsg); note.textContent = 'Saved on this device. To share it with each other, save from the Claude version of the park.'; return true;
+    toast(okMsg); note.textContent = 'Password OK ✦ but this public copy can\'t save online. Publish it in the Claude version of the park and it shows up here within the hour (kept on this device for now).'; return true;
   }
   const userExtras = () => state.extras && (state.extras.songs || state.extras.quotes || state.extras.facts) ? state.extras : (state.pubExtras || {});
   function renderPlans(){
@@ -3688,7 +3688,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
     ev.preventDefault();
     try { await unlock($('#f-pw').value); } catch(e){ $('#formErr').textContent = 'That password didn\'t work. Type M&N to publish.'; $('#formErr').hidden = false; $('#f-pw').focus(); return; }
     $('#f-pw').value = '';
-    if (!artifact || !state.canWrite){ $('#formErr').textContent = 'Password OK ✦ but this copy of the park can\'t save online. Publish from the Claude version of the park.'; $('#formErr').hidden = false; return; }
+    if (!artifact || !state.canWrite){ $('#formErr').textContent = 'Password OK ✦ but this public copy can\'t save online. Publish from the Claude version of the park and it shows up here within the hour.'; $('#formErr').hidden = false; return; }
     const status = (ev.submitter && ev.submitter.dataset.status) || 'published';
     const kind = document.querySelector('input[name=kind]:checked').value;
     const link = $('#f-link').value.trim();

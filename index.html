@@ -3331,13 +3331,26 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
   const PARK_DAYS = [['Ferris Wheel Appreciation Day','🎡🎡💗✨'],['Front Row Day','🎢🎢😱✨'],['Cotton Candy Cloud Day','🍭☁️💗✨'],['Teacup Twirl Day','🫖☕🌀✨'],['Mixtape Swap Day','📼🎶💌✨'],['Okay. Day','💬👌🙂✨'],['Ocean the Bear Day','🧸🌊💙✨'],['Film Camera Day','📷🎞️✨🌅'],['Croissant & Café au Lait Day','🥐☕💗✨'],['Onigiri Picnic Day','🍙🧺🌸✨'],['Sticker Everything Day','😊⭐🌈✨'],['Lucky Cat Day','🐱🪙🍀✨'],['Fairy Lights Day','💡✨🌟💗'],['Carousel Day','🎠🎠🎶✨'],['Balloon Release Day','🎈🎈☁️✨'],['Paper Crane Day','🕊️📄🌸✨'],['Shenanigans Day','🤪🎉🎢✨'],['Takeout in Every City Day','🥡🥢🌏✨'],['Pearls at Breakfast Day','💎🥐☕✨'],['Lunch-Break Project Day','⏱🛠️🎢✨'],['Group Chat Day','💬📱💞✨'],['Snow Globe Day','❄️🔮⛄✨']];
   const WORLD_DAYS = {};
   WORLD_DAYS_RAW.split('\n').forEach(line => { const [md, name, where, emo, fact] = line.split('|'); if (md && fact) WORLD_DAYS[md.trim()] = [name, where, emo, fact.trim()]; });
+  const LAND_CYCLE = ['sakura','paris','lotus','ocean','starlight','main'];
+  function landForDay(text, doy, mon){
+    const T = text.toLowerCase();
+    if (/halloween|muertos|bonfire|pirate|dragon|saturnalia/.test(T)) return 'halloween';
+    if (/christmas|winter|snow|sinterklaas|lucia|posadas|polar|solstice|nicholas|hanukkah|festivus/.test(T) || mon === 11) return 'christmas';
+    if (/ocean|sea|turtle|water|whale|island|fish|seafarer|wind|towel|umbrella|bath/.test(T)) return 'ocean';
+    if (/japan|sakura|cherry|hanami|cat|kawaii|children|pocky|culture|hina|setsubun|tea|haiku|flower|hug/.test(T)) return 'sakura';
+    if (/france|french|paris|croissant|coffee|cheese|pasta|pizza|café|waffle|muguet|kiss|art|theatre|museum|book|poetry|translation|language|bise/.test(T)) return 'paris';
+    if (/earth|tree|bee|plant|environment|biodiversity|animal|lion|tiger|elephant|mountain|food|bird|dog|pet|health|peace/.test(T)) return 'lotus';
+    if (/space|moon|star|science|ufo|asteroid|night|radio|emoji|photo|trivia|puzzle|mario|jazz|music|dance|sleep|pi /.test(T)) return 'starlight';
+    return LAND_CYCLE[doy % LAND_CYCLE.length];
+  }
   function worldDayFor(day){
     const t = dOnly(day), md = String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
     const W = WORLD_DAYS[md];
-    if (W) return { id: 'w-' + md, name: W[0], where: W[1], start: t, end: t, emo: W[2], land: '', greet: HOLI_EMOJI({ emo: W[2] })[0] + ' Happy ' + W[0] + '!', act: '', season: false, daily: true, extra: [W[3], 'Catch the ' + HOLI_EMOJI({ emo: W[2] })[0], W[2], '☁️'] };
+    const doy0 = Math.round((t - new Date(t.getFullYear(), 0, 1)) / 864e5);
+    if (W) return { id: 'w-' + md, name: W[0], where: W[1], start: t, end: t, emo: W[2], land: landForDay(W[0] + ' ' + W[1] + ' ' + W[3], doy0, t.getMonth()), greet: HOLI_EMOJI({ emo: W[2] })[0] + ' Happy ' + W[0] + '!', act: '', season: false, daily: true, extra: [W[3], 'Catch the ' + HOLI_EMOJI({ emo: W[2] })[0], W[2], '☁️'] };
     const doy = Math.round((t - new Date(t.getFullYear(), 0, 1)) / 864e5), P = PARK_DAYS[(doy + t.getFullYear()) % PARK_DAYS.length];
     const pool = [...(typeof userExtras === 'function' ? (userExtras().facts || []).map(x => x[0]) : []), ...DAILY_FACTS];
-    return { id: 'p-' + md, name: P[0], where: 'an M&N park holiday (we made this one up ✦)', start: t, end: t, emo: P[1], land: '', greet: HOLI_EMOJI({ emo: P[1] })[0] + ' Happy ' + P[0] + ' at the park!', act: '', season: false, daily: true, park: true, extra: [pool[(doy * 3 + t.getFullYear()) % pool.length], 'Catch the ' + HOLI_EMOJI({ emo: P[1] })[0], P[1], '☁️'] };
+    return { id: 'p-' + md, name: P[0], where: 'an M&N park holiday (we made this one up ✦)', start: t, end: t, emo: P[1], land: landForDay(P[0], doy, t.getMonth()), greet: HOLI_EMOJI({ emo: P[1] })[0] + ' Happy ' + P[0] + ' at the park!', act: '', season: false, daily: true, park: true, extra: [pool[(doy * 3 + t.getFullYear()) % pool.length], 'Catch the ' + HOLI_EMOJI({ emo: P[1] })[0], P[1], '☁️'] };
   }
   // ---- little joys: every day, things to be grateful for, amused by, and watch ----
   const GRATEFUL = ['warm socks on a cold morning','the first sip of coffee','a friend who says "Okay." to every wild idea','group chats at 2 a.m.','film photos that actually turn out','the smell of a bakery','rain on the window while you\'re cosy inside','a song that fits the moment perfectly','fresh sheets','street food at night','someone saving you the front row','postcards in the mailbox','voice notes from far away','long calls across time zones','a perfectly ripe mango','kind strangers who take your photo','a sunset from the top of a Ferris wheel','a suitcase that closes on the first try','the little "Delivered" under your message','dogs who lean on you','cats who choose your lap','inside jokes nobody else gets','the last day of a long week','a brand-new notebook','the right playlist on a long ride','Christmas lights in the snow','a cosy blanket','someone saying "bienvenue"','mochi','laughing until you can\'t breathe','a good hair day','matching stickers','late-night takeout','a plan finally coming together','the first day of sakura season','free refills','a hug that lasts a little too long','an empty Ferris wheel queue','your best friend\'s "I\'m outside"','a mixtape made just for you'];

@@ -3138,7 +3138,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
     return el('div',{class:'pdf-wrap'}, btn, f, note);
   }
   async function persistAll(okMsg, note){
-    if (canOnline()){ const ok = await save({ ...snapshot() }, okMsg); note.textContent = ok ? (artifact ? 'Saved for both of you ✦' : 'Saved online ✦ live in about a minute') : 'Could not save just now. Try again.'; return ok; }
+    if (canOnline()){ const ok = await save({ ...snapshot() }, okMsg); note.textContent = ok ? (artifact ? 'Saved for both of you ✦' : 'Saved online ✦ live in about a minute') : 'Could not save online just now, so it\'s kept on this device. Try again in a moment.'; if (!ok){ try { localStorage.setItem(PLANS_LS, JSON.stringify(state.plans || [])); localStorage.setItem(EXTRAS_LS, JSON.stringify(state.extras || {})); localStorage.setItem('mn-doors-draft', JSON.stringify(state.doors || {})); localStorage.setItem('mn-snips-draft', JSON.stringify(state.snips || [])); } catch(e){} } return ok; }
     try { localStorage.setItem(PLANS_LS, JSON.stringify(state.plans || [])); localStorage.setItem(EXTRAS_LS, JSON.stringify(state.extras || {})); localStorage.setItem('mn-doors-draft', JSON.stringify(state.doors || {})); localStorage.setItem('mn-snips-draft', JSON.stringify(state.snips || [])); } catch(e){}
     toast(okMsg); note.textContent = 'Password OK ✦ but this public copy can\'t save online. Publish it in the Claude version of the park and it shows up here within the hour (kept on this device for now).'; return true;
   }

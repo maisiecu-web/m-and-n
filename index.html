@@ -318,6 +318,8 @@ td.num,th.num{text-align:right}
 .chat li.n .bubble{background:var(--nanami);border-radius:16px 16px 4px 16px}
 .chat li.punch .bubble{font-family:var(--display);font-size:1.1rem}
 .chat-foot{display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center;padding:6px 12px 12px;background:var(--sheet);border-radius:0 0 16px 16px}
+.uni{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.uni .chip{font-size:.75rem;padding:3px 10px 1px}
 .chat-note{font-family:var(--hand);font-size:.95rem;line-height:1.2;color:var(--muted);text-align:center;max-width:24rem}
 .chat{border-radius:0;cursor:pointer;height:12.5rem;overflow-y:auto;padding:12px 12px 10px;gap:6px;min-height:0;scroll-behavior:smooth}
 .chat .bubble{font-size:.8rem;padding:5px 10px 3px;border-width:1.5px}
@@ -879,7 +881,7 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
       <section class="win chatwin" aria-label="How the park started">
         <div class="win-bar"><span class="win-name" title="Drag me anywhere"><span class="grip" aria-hidden="true"></span><span id="chatName">talent_show.chat</span></span><button type="button" class="replay" id="chatReplay" aria-label="Show a different story">↻ new story</button></div>
         <ol class="chat" id="chat" aria-live="polite"></ol>
-        <div class="chat-foot"><button type="button" class="key key-primary key-small" id="chatNext">next text ✦</button><p class="chat-note">✦ These stories may or may not be true. Any resemblance to real events is purely coincidental (or is it?). ✦</p></div>
+        <div class="chat-foot"><button type="button" class="key key-primary key-small" id="chatNext">next text ✦</button><div class="uni" role="group" aria-label="Pick a universe"><button type="button" class="chip a" data-uni="all" aria-pressed="true">✦ all universes</button><button type="button" class="chip a" data-uni="this" aria-pressed="false">🌍 this one</button><button type="button" class="chip a" data-uni="parallel" aria-pressed="false">🪐 parallel</button></div><p class="chat-note">✦ These stories may or may not be true. Any resemblance to real events is purely coincidental (or is it?). ✦</p></div>
       </section>
       <section class="win guidewin" aria-label="Park guide">
         <div class="win-bar"><span class="win-name">park_guide.map</span></div>
@@ -3657,7 +3659,18 @@ footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.75
     }
   }
   function startChat(){ $('#chat').replaceChildren(); chatPos = 0; chatBusy = false; city = CITIES[Math.floor(Math.random()*CITIES.length)]; CHAT = STORIES[story][1]; $('#chatName').textContent = STORIES[story][0] + '.chat'; nextText(); }
-  function newStory(){ let k; do { k = Math.floor(Math.random()*STORIES.length); } while (k === story && STORIES.length > 1); story = k; startChat(); }
+  let uni = 'all';
+  const isParallel = s => !!(s[1][0] && s[1][0][0] === 's' && /parallel universe/.test(s[1][0][1]));
+  function newStory(){
+    let pool = STORIES.map((s, i) => i).filter(i => uni === 'all' || (uni === 'parallel') === isParallel(STORIES[i]));
+    if (!pool.length) pool = STORIES.map((s, i) => i);
+    const others = pool.filter(i => i !== story); const from = others.length ? others : pool;
+    story = from[Math.floor(Math.random()*from.length)]; startChat(); }
+  document.querySelectorAll('.uni [data-uni]').forEach(b => b.addEventListener('click', () => {
+    uni = b.dataset.uni;
+    document.querySelectorAll('.uni [data-uni]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    newStory();
+  }));
   startChat();
   $('#chatNext').addEventListener('click', nextText);
   $('#chat').addEventListener('click', nextText);

@@ -5,3 +5,5 @@ Writing, a podcast and mixtapes by Maisie & Nanami. Rides open all year, avec am
 Grand opening: Christmas Day ✦
 
 This is the public version of the park. Backstage stays backstage.
+
+🎡 Visit the park: https://maisiecu-web.github.io/m-and-n/
